@@ -3,20 +3,20 @@
 require 'spec_helper'
 
 
-describe Rodauth::Features::Google do
+describe Rodauth::Features::GoogleJWT do
   include Rack::Test::Methods
 
   let(:db) { Sequel::DATABASES.first }
 
   it 'has a version number' do
-    ::Rodauth::Features::Google::VERSION.wont_be_nil
+    ::Rodauth::Features::GoogleJWT::VERSION.wont_be_nil
   end
 
   describe 'with default options' do
     let(:app) do
       create_app do
         plugin :rodauth, json: :only do
-          enable :jwt, :google
+          enable :jwt, :google_jwt
           accounts_table :users
           require_bcrypt? false
           jwt_secret 'wat'
@@ -36,8 +36,8 @@ describe Rodauth::Features::Google do
           'domain' => 'a@b.c'
         }
 
-        Rodauth::Google::TOKEN_VALIDATOR.stub :check, mock_fields do
-          json_post '/google', id_token: 'hipsdontlie'
+        Rodauth::GoogleJWT::TOKEN_VALIDATOR.stub :check, mock_fields do
+          json_post '/google-jwt', id_token: 'hipsdontlie'
         end
       end
 
@@ -61,8 +61,8 @@ describe Rodauth::Features::Google do
           'domain' => 'x@y.z'
         }
 
-        Rodauth::Google::TOKEN_VALIDATOR.stub :check, mock_fields do
-          json_post '/google', id_token: 'hipsdontlie'
+        Rodauth::GoogleJWT::TOKEN_VALIDATOR.stub :check, mock_fields do
+          json_post '/google-jwt', id_token: 'hipsdontlie'
         end
 
         db[:users][email: 'hips@dontlie.com']
@@ -95,8 +95,8 @@ describe Rodauth::Features::Google do
 
     it "doesn't authorize user if id_token is not valid" do
       mock_error = proc { raise ::GoogleIDToken::SignatureError, 'yes they do' }
-      Rodauth::Google::TOKEN_VALIDATOR.stub :check, mock_error do
-        json_post '/google', id_token: 'hipsdontlie'
+      Rodauth::GoogleJWT::TOKEN_VALIDATOR.stub :check, mock_error do
+        json_post '/google-jwt', id_token: 'hipsdontlie'
       end
 
       last_response.must_be :unauthorized?
@@ -104,7 +104,7 @@ describe Rodauth::Features::Google do
     end
 
     it "doesn't authorize user if there's no id_token param" do
-      json_post '/google'
+      json_post '/google-jwt'
       last_response.must_be :unauthorized?
       last_response.body.must_equal({
         errors: ['The id_token parameter is not present']
@@ -117,7 +117,7 @@ describe Rodauth::Features::Google do
     let(:app) do
       create_app do
         plugin :rodauth, json: :only do
-          enable :jwt, :google
+          enable :jwt, :google_jwt
           accounts_table :users
           require_bcrypt? false
           jwt_secret 'wat'
@@ -138,8 +138,8 @@ describe Rodauth::Features::Google do
           'domain' => 'a@b.c'
         }
 
-        Rodauth::Google::TOKEN_VALIDATOR.stub :check, mock_fields do
-          json_post '/google', custom_id_token: 'hipsdontlie'
+        Rodauth::GoogleJWT::TOKEN_VALIDATOR.stub :check, mock_fields do
+          json_post '/google-jwt', custom_id_token: 'hipsdontlie'
         end
       end
 
@@ -154,7 +154,7 @@ describe Rodauth::Features::Google do
     let(:app) do
       create_app do
         plugin :rodauth, json: :only do
-          enable :jwt, :google
+          enable :jwt, :google_jwt
           accounts_table :users
           require_bcrypt? false
           jwt_secret 'wat'
@@ -175,8 +175,8 @@ describe Rodauth::Features::Google do
           'domain' => 'a@b.c'
         }
 
-        Rodauth::Google::TOKEN_VALIDATOR.stub :check, mock_fields do
-          json_post '/google', id_token: 'hipsdontlie'
+        Rodauth::GoogleJWT::TOKEN_VALIDATOR.stub :check, mock_fields do
+          json_post '/google-jwt', id_token: 'hipsdontlie'
         end
       end
 
@@ -201,8 +201,8 @@ describe Rodauth::Features::Google do
           'domain' => 'a@b.c'
         }
 
-        Rodauth::Google::TOKEN_VALIDATOR.stub :check, mock_fields do
-          json_post '/google', id_token: 'hipsdontlie'
+        Rodauth::GoogleJWT::TOKEN_VALIDATOR.stub :check, mock_fields do
+          json_post '/google-jwt', id_token: 'hipsdontlie'
         end
       end
 
@@ -217,7 +217,7 @@ describe Rodauth::Features::Google do
     let(:app) do
       create_app do
         plugin :rodauth, json: :only do
-          enable :jwt, :google
+          enable :jwt, :google_jwt
           accounts_table :users
           require_bcrypt? false
           jwt_secret 'wat'
@@ -239,8 +239,8 @@ describe Rodauth::Features::Google do
           'domain' => 'a@b.c'
         }
 
-        Rodauth::Google::TOKEN_VALIDATOR.stub :check, mock_fields do
-          json_post '/google', id_token: 'hipsdontlie'
+        Rodauth::GoogleJWT::TOKEN_VALIDATOR.stub :check, mock_fields do
+          json_post '/google-jwt', id_token: 'hipsdontlie'
         end
       end
 
@@ -260,8 +260,8 @@ describe Rodauth::Features::Google do
           'domain' => 'a@b.c'
         }
 
-        Rodauth::Google::TOKEN_VALIDATOR.stub :check, mock_fields do
-          json_post '/google', id_token: 'hipsdontlie'
+        Rodauth::GoogleJWT::TOKEN_VALIDATOR.stub :check, mock_fields do
+          json_post '/google-jwt', id_token: 'hipsdontlie'
         end
       end
 

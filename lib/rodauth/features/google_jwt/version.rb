@@ -2,7 +2,7 @@
 
 module Rodauth
   module Features
-    module Google
+    module GoogleJWT
       VERSION = '0.1.0'
     end
   end

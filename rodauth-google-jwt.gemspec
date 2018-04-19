@@ -2,13 +2,13 @@
 
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'rodauth/features/google/version'
+require 'rodauth/features/google_jwt/version'
 
 # rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
   # rubocop:enable Metrics/BlockLength
-  spec.name          = 'rodauth-google'
-  spec.version       = Rodauth::Features::Google::VERSION
+  spec.name          = 'rodauth-google-jwt'
+  spec.version       = Rodauth::Features::GoogleJWT::VERSION
   spec.authors       = ['Tony Goncalves']
   spec.email         = ['tonyfg.pt@gmail.com']
 

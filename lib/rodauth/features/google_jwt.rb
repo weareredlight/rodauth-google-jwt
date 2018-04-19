@@ -5,12 +5,12 @@ require 'googleauth'
 require 'rodauth'
 require 'sequel'
 
-require_relative 'google/version'
+require_relative 'google_jwt/version'
 
 
 module Rodauth
   module Features
-    Feature.define(:google, :Google) do
+    Feature.define(:google_jwt, :GoogleJWT) do
       class NoTokenError < StandardError; end
 
       const_set :CLIENT_ID, ::Google::Auth::ClientId.new(
@@ -32,7 +32,7 @@ module Rodauth
         domain = domain[domain.index('@') + 1..-1]
 
         if domain_blacklist.include?(domain) ||
-           (domain_whitelist.any? && domain_whitelist.none?(domain))
+           (domain_whitelist.any? && !domain_whitelist.include?(domain))
           errors << 'Accounts from this domain are not allowed to sign in.'
         end
 
@@ -59,10 +59,10 @@ module Rodauth
             raise NoTokenError, "The #{token_param} parameter is not present"
           end
 
-          payload = Rodauth::Google::TOKEN_VALIDATOR.check(
+          payload = Rodauth::GoogleJWT::TOKEN_VALIDATOR.check(
             r.params[token_param],
-            Rodauth::Google::CLIENT_ID.id,
-            Rodauth::Google::CLIENT_ID.id
+            Rodauth::GoogleJWT::CLIENT_ID.id,
+            Rodauth::GoogleJWT::CLIENT_ID.id
           )
           errors = validate payload
 

@@ -39,7 +39,7 @@ Sequel::DATABASES.first.create_table :users do
   String :picture
 end
 
-require 'rodauth/features/google'
+require 'rodauth/features/google_jwt'
 
 
 def create_app(&block)
