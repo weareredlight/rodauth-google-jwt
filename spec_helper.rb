@@ -30,7 +30,10 @@ module Minitest
   end
 end
 
-Sequel.sqlite
+db_name = 'rodauth_google_jwt_test'
+`dropdb #{db_name}`
+`createdb #{db_name}`
+Sequel.connect(adapter: 'postgres', database: db_name)
 Sequel::DATABASES.first.create_table :users do
   primary_key :id
   String :email, unique: true
