@@ -47,9 +47,8 @@ module Rodauth
           picture: new_user_data['picture']
         }
 
-        db[accounts_table].insert_ignore.insert(
-          fields.merge(email: new_user_data['email'])
-        )
+        db[accounts_table].select(:id)[email: new_user_data['email']]&.[](:id) ||
+          db[accounts_table].insert(fields.merge(email: new_user_data['email']))
       end
 
 
@@ -67,7 +66,7 @@ module Rodauth
           errors = validate payload
 
           if errors.none?
-            session[:user_id] = create_user(payload)
+            session[session_key] = create_user(payload)
             { jwt: session_jwt }
           else
             response.status = 401

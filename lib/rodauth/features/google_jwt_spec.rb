@@ -82,13 +82,13 @@ describe Rodauth::Features::GoogleJWT do
       it 'returns a jwt token with the user id' do
         body = last_response.body
         user_id = db[:users].first(email: 'hips@dontlie.com')[:id]
-        expected_jwt = JWT.encode({ user_id: user_id }, 'wat')
+        expected_jwt = JWT.encode({ account_id: user_id }, 'wat')
         body.must_equal({ jwt: expected_jwt }.to_json)
         user_id = JWT.decode(
           JSON.parse(body)['jwt'],
           'wat',
           true
-        ).first['user_id']
+        ).first['account_id']
         db[:users][id: user_id][:email].must_equal 'hips@dontlie.com'
       end
     end
