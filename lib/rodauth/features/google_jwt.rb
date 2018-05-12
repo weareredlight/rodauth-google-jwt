@@ -47,8 +47,11 @@ module Rodauth
           picture: new_user_data['picture']
         }
 
-        db[accounts_table].select(:id)[email: new_user_data['email']]&.[](:id) ||
-          db[accounts_table].insert(fields.merge(email: new_user_data['email']))
+        db[accounts_table]
+          .select(:id)[email: new_user_data['email']]
+          &.[](:id) ||
+          db[accounts_table]
+            .insert(fields.merge(email: new_user_data['email']))
       end
 
 
@@ -67,7 +70,9 @@ module Rodauth
 
           if errors.none?
             session[session_key] = create_user(payload)
-            { jwt: session_jwt }
+            response['Authorization'] = session_jwt
+            response['Access-Control-Expose-Headers'] = 'Authorization'
+            '' # The token is returned in the Authorization header
           else
             response.status = 401
             { errors: errors }
